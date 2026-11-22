@@ -18,8 +18,15 @@ CREATE TABLE IF NOT EXISTS compensation(rotation_id TEXT PRIMARY KEY,units INTEG
 CREATE TABLE IF NOT EXISTS liability_review(rotation_id TEXT PRIMARY KEY,reason TEXT NOT NULL,responsible TEXT NOT NULL,units INTEGER NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
 CREATE TABLE IF NOT EXISTS decision_log(id INTEGER PRIMARY KEY,object_type TEXT NOT NULL,object_id TEXT NOT NULL,status TEXT NOT NULL,reason TEXT NOT NULL,evidence_id TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS stage_gauge(id TEXT PRIMARY KEY,canal_id TEXT NOT NULL,bank TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
-CREATE TABLE IF NOT EXISTS stage_reading(source_id TEXT PRIMARY KEY REFERENCES evidence(id),gauge_id TEXT NOT NULL REFERENCES stage_gauge(id),at TEXT NOT NULL,height_m REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS stage_reading(source_id TEXT PRIMARY KEY REFERENCES evidence(id),gauge_id TEXT NOT NULL REFERENCES stage_gauge(id),at TEXT NOT NULL,height_m REAL NOT NULL,uploaded_at TEXT NOT NULL DEFAULT '');
 CREATE TABLE IF NOT EXISTS flood_warning(canal_id TEXT PRIMARY KEY,status TEXT NOT NULL,stage_m REAL NOT NULL,reading_id TEXT NOT NULL REFERENCES stage_reading(source_id));
+CREATE TABLE IF NOT EXISTS stage_site(id TEXT PRIMARY KEY,gauge_id TEXT NOT NULL REFERENCES stage_gauge(id),crest_m REAL NOT NULL,max_slew_m_per_min REAL NOT NULL,probe_bandwidth_hz REAL NOT NULL,sample_clock TEXT NOT NULL,upload_clock TEXT NOT NULL,buffer_signer TEXT NOT NULL,surveyed_by TEXT NOT NULL,witness TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS stage_outage(id TEXT PRIMARY KEY,site_id TEXT NOT NULL REFERENCES stage_site(id),start_at TEXT NOT NULL,end_at TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS stage_buffer_page(id TEXT PRIMARY KEY,site_id TEXT NOT NULL REFERENCES stage_site(id),seq INTEGER NOT NULL,start_at TEXT NOT NULL,end_at TEXT NOT NULL,cadence_sec INTEGER NOT NULL,signed_by TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS stage_buffer_sample(page_id TEXT NOT NULL REFERENCES stage_buffer_page(id),at TEXT NOT NULL,height_m REAL NOT NULL,PRIMARY KEY(page_id,at));
+CREATE TABLE IF NOT EXISTS crest_mark(id TEXT PRIMARY KEY,site_id TEXT NOT NULL REFERENCES stage_site(id),mark_m REAL NOT NULL,window_start TEXT NOT NULL,window_end TEXT NOT NULL,sealed_by TEXT NOT NULL,witness TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS stage_caldev(id TEXT PRIMARY KEY,site_id TEXT NOT NULL REFERENCES stage_site(id),valid_from TEXT NOT NULL,valid_to TEXT NOT NULL,max_offset_m REAL NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS overtop_publication(site_id TEXT NOT NULL REFERENCES stage_site(id),version INTEGER NOT NULL,evidence_seq INTEGER NOT NULL,windows TEXT NOT NULL,events_lo INTEGER NOT NULL,events_hi INTEGER,closures TEXT NOT NULL,pending TEXT NOT NULL,reopen_at TEXT,sha TEXT NOT NULL,raw BLOB NOT NULL,trigger_id TEXT NOT NULL,PRIMARY KEY(site_id,version));
 '''
 
 def connect(path):
@@ -48,4 +55,8 @@ def report(path):
          'deliveries':'SELECT * FROM delivery ORDER BY rotation_id','compensation':'SELECT * FROM compensation ORDER BY rotation_id',
          'gauges':'SELECT * FROM stage_gauge ORDER BY id','stage_readings':'SELECT * FROM stage_reading ORDER BY source_id',
          'flood_warnings':'SELECT * FROM flood_warning ORDER BY canal_id',
+         'stage_sites':'SELECT * FROM stage_site ORDER BY id','stage_outages':'SELECT * FROM stage_outage ORDER BY id',
+         'stage_buffers':'SELECT * FROM stage_buffer_page ORDER BY id','stage_buffer_samples':'SELECT * FROM stage_buffer_sample ORDER BY page_id,at',
+         'crest_marks':'SELECT * FROM crest_mark ORDER BY id','stage_caldevs':'SELECT * FROM stage_caldev ORDER BY id',
+         'overtop_publications':'SELECT site_id,version,evidence_seq,windows,events_lo,events_hi,closures,pending,reopen_at,sha,trigger_id FROM overtop_publication ORDER BY site_id,version',
          'decisions':'SELECT * FROM decision_log ORDER BY id'}.items()}

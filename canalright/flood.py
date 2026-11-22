@@ -1,4 +1,12 @@
-"""Provisional warning based on one bank's water height alone."""
+"""Provisional warning based on one bank's water height alone.
+
+The warning keeps its deliberately shallow rule -- the latest upload
+page at or above 1.2 m records ``high_stage`` -- because it is only a
+duty-desk signal.  Every transition is also written to the decision log
+so superseded warnings stay reviewable; the evidence-graded
+overtopping determination lives in ``canalright.overtop``.
+"""
+from .store import log
 
 
 def update_warning(db, canal_id, source_id):
@@ -8,4 +16,5 @@ def update_warning(db, canal_id, source_id):
     status = 'high_stage' if row['height_m'] >= 1.2 else 'normal'
     db.execute('INSERT INTO flood_warning VALUES(?,?,?,?) ON CONFLICT(canal_id) DO UPDATE SET status=excluded.status,stage_m=excluded.stage_m,reading_id=excluded.reading_id',
                (canal_id, status, row['height_m'], source_id))
+    log(db, 'flood_warning', canal_id, status, 'latest_page_threshold', source_id)
     return {'canal_id': canal_id, 'status': status}
