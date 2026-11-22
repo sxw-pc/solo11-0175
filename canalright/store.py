@@ -17,9 +17,16 @@ CREATE TABLE IF NOT EXISTS delivery(rotation_id TEXT PRIMARY KEY,status TEXT NOT
 CREATE TABLE IF NOT EXISTS compensation(rotation_id TEXT PRIMARY KEY,units INTEGER NOT NULL,responsible TEXT NOT NULL,status TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS liability_review(rotation_id TEXT PRIMARY KEY,reason TEXT NOT NULL,responsible TEXT NOT NULL,units INTEGER NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
 CREATE TABLE IF NOT EXISTS decision_log(id INTEGER PRIMARY KEY,object_type TEXT NOT NULL,object_id TEXT NOT NULL,status TEXT NOT NULL,reason TEXT NOT NULL,evidence_id TEXT NOT NULL);
-CREATE TABLE IF NOT EXISTS bathy_line(id TEXT PRIMARY KEY,canal_id TEXT NOT NULL,length_m REAL NOT NULL,width_m REAL NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
-CREATE TABLE IF NOT EXISTS bathy_echo(source_id TEXT PRIMARY KEY REFERENCES evidence(id),line_id TEXT NOT NULL REFERENCES bathy_line(id),beam_id TEXT NOT NULL,time_ms REAL NOT NULL,strength REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS bathy_line(id TEXT PRIMARY KEY,canal_id TEXT NOT NULL,length_m REAL NOT NULL,width_m REAL NOT NULL,beam_count INTEGER NOT NULL DEFAULT 0,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS bathy_echo(id TEXT PRIMARY KEY,source_id TEXT NOT NULL REFERENCES evidence(id),line_id TEXT NOT NULL REFERENCES bathy_line(id),beam_id TEXT NOT NULL,time_ms REAL NOT NULL,strength REAL NOT NULL,observed_at TEXT NOT NULL DEFAULT '');
 CREATE TABLE IF NOT EXISTS dredge_advice(line_id TEXT PRIMARY KEY,depth_m REAL NOT NULL,cut_m3 REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS sound_speed_profile(id TEXT PRIMARY KEY,canal_id TEXT NOT NULL,speed_m_s REAL NOT NULL,valid_from TEXT NOT NULL,valid_to TEXT NOT NULL,technician TEXT NOT NULL,witness TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS frequency_return(id TEXT PRIMARY KEY,line_id TEXT NOT NULL REFERENCES bathy_line(id),beam_id TEXT NOT NULL,freq_khz REAL NOT NULL,time_ms REAL NOT NULL,strength REAL NOT NULL,observed_at TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS sediment_core(id TEXT PRIMARY KEY,line_id TEXT NOT NULL REFERENCES bathy_line(id),station_m REAL NOT NULL,offset_m REAL NOT NULL,bed_depth_m REAL NOT NULL,material TEXT NOT NULL,disposal TEXT NOT NULL,observed_at TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS bed_profile(id TEXT PRIMARY KEY,line_id TEXT NOT NULL REFERENCES bathy_line(id),version INTEGER NOT NULL,surveyed_at TEXT NOT NULL,speed_m_s REAL NOT NULL,payable_m3 REAL NOT NULL,possible_m3 REAL NOT NULL,manual_m3 REAL NOT NULL,gap_area_m2 REAL NOT NULL,unresolved_area_m2 REAL NOT NULL,status TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS profile_hypothesis(id TEXT PRIMARY KEY,profile_id TEXT NOT NULL REFERENCES bed_profile(id),label TEXT NOT NULL,cut_m3 REAL NOT NULL,depths TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS dredge_instruction(id TEXT PRIMARY KEY,line_id TEXT NOT NULL REFERENCES bathy_line(id),profile_id TEXT NOT NULL REFERENCES bed_profile(id),cut_m3 REAL NOT NULL,contractor TEXT NOT NULL,status TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS dredge_actual(id TEXT PRIMARY KEY,instruction_id TEXT NOT NULL REFERENCES dredge_instruction(id),volume_m3 REAL NOT NULL,material TEXT NOT NULL,disposal TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
 '''
 
 def connect(path):
@@ -48,4 +55,11 @@ def report(path):
          'deliveries':'SELECT * FROM delivery ORDER BY rotation_id','compensation':'SELECT * FROM compensation ORDER BY rotation_id',
          'bathy_lines':'SELECT * FROM bathy_line ORDER BY id','bathy_echoes':'SELECT * FROM bathy_echo ORDER BY source_id',
          'dredge_advice':'SELECT * FROM dredge_advice ORDER BY line_id',
+         'sound_speed_profiles':'SELECT * FROM sound_speed_profile ORDER BY id',
+         'frequency_returns':'SELECT * FROM frequency_return ORDER BY id',
+         'sediment_cores':'SELECT * FROM sediment_core ORDER BY id',
+         'bed_profiles':'SELECT * FROM bed_profile ORDER BY id',
+         'profile_hypotheses':'SELECT * FROM profile_hypothesis ORDER BY id',
+         'dredge_instructions':'SELECT * FROM dredge_instruction ORDER BY id',
+         'dredge_actuals':'SELECT * FROM dredge_actual ORDER BY id',
          'decisions':'SELECT * FROM decision_log ORDER BY id'}.items()}

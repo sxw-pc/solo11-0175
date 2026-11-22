@@ -1,0 +1,28 @@
+{
+  "kind": "bathy_echo_page",
+  "id": "L1-echo-page-2026-11-01",
+  "line_id": "L1",
+  "observed_at": "2026-11-01T08:00:00Z",
+  "echoes": [
+    {"beam_id": "B01", "time_ms": 16, "strength": 0.62},
+    {"beam_id": "B01", "time_ms": 20, "strength": 0.91},
+    {"beam_id": "B02", "time_ms": 16, "strength": 0.62},
+    {"beam_id": "B02", "time_ms": 20, "strength": 0.91},
+    {"beam_id": "B03", "time_ms": 16, "strength": 0.62},
+    {"beam_id": "B03", "time_ms": 20, "strength": 0.91},
+    {"beam_id": "B04", "time_ms": 16, "strength": 0.62},
+    {"beam_id": "B04", "time_ms": 20, "strength": 0.91},
+    {"beam_id": "B05", "time_ms": 16, "strength": 0.62},
+    {"beam_id": "B05", "time_ms": 20, "strength": 0.91},
+    {"beam_id": "B06", "time_ms": 16, "strength": 0.62},
+    {"beam_id": "B06", "time_ms": 20, "strength": 0.91},
+    {"beam_id": "B07", "time_ms": 16, "strength": 0.62},
+    {"beam_id": "B07", "time_ms": 20, "strength": 0.91},
+    {"beam_id": "B08", "time_ms": 16, "strength": 0.62},
+    {"beam_id": "B08", "time_ms": 20, "strength": 0.91},
+    {"beam_id": "B09", "time_ms": 16, "strength": 0.62},
+    {"beam_id": "B09", "time_ms": 20, "strength": 0.91},
+    {"beam_id": "B10", "time_ms": 16, "strength": 0.62},
+    {"beam_id": "B10", "time_ms": 20, "strength": 0.91}
+  ]
+}
