@@ -1,0 +1,52 @@
+{
+  "kind": "pump_phase",
+  "id": "pump-phase-fixture",
+  "description": "Same RMS page (230 V, 10 A) with two different current phases. Both runs share P1's original 2.3 kWh / 2.3 yuan provisional bill, but only the paired waveform shows that run B draws 1.15 kWh of real energy.",
+  "window": {
+    "start_at": "2026-11-22T08:00:00Z",
+    "end_at": "2026-11-22T09:00:00Z",
+    "voltage_rms": 230,
+    "current_rms": 10,
+    "frequency_hz": 60,
+    "sample_rate_hz": 600,
+    "samples_per_cycle": 10,
+    "cycles": 6,
+    "sample_count": 60,
+    "apparent_kwh": 2.3,
+    "rate_per_kwh": 1
+  },
+  "processes": {
+    "A": {
+      "run_id": "P1-run-A",
+      "description": "v(t) and i(t) in phase: 2300 W, 2.3 kWh, 2.3 yuan",
+      "phase_deg": 0,
+      "real_kwh": 2.3
+    },
+    "B": {
+      "run_id": "P1-run-B",
+      "description": "i(t) lags by 60 degrees: 1150 W, 1.15 kWh, 1.15 yuan",
+      "phase_deg": -60,
+      "real_kwh": 1.15
+    }
+  },
+  "samples": {
+    "note": "Sampled at t = n / sample_rate_hz. voltage = sqrt(2)*230*sin(2*pi*f*t); current = sqrt(2)*10*sin(2*pi*f*t + phase_deg).",
+    "process_A_current_phase_deg": 0,
+    "process_B_current_phase_deg": -60
+  },
+  "station_total": {
+    "kind": "pump_total_meter",
+    "id": "total-evidence-tm-1",
+    "total_meter_id": "TM-1",
+    "station_id": "ST1",
+    "start_at": "2026-11-22T08:00:00Z",
+    "end_at": "2026-11-22T09:00:00Z",
+    "kwh": 3.5,
+    "rate_per_kwh": 1,
+    "signer": "utility",
+    "loss_kwh_lower": 0,
+    "loss_kwh_upper": 0,
+    "covers_pumps": ["P1", "P2"],
+    "signature": "7c38f0619faef4c880627e94ba215735cba589558743b0bdd06672316eea9ae7"
+  }
+}
