@@ -1,0 +1,185 @@
+[
+  {
+    "id": "ion-batch-B1",
+    "kind": "ion_calibration_batch",
+    "batch_id": "B1",
+    "standard_na": 600,
+    "standard_ca": 600,
+    "observed_ec": 1200,
+    "technician": "lab-a",
+    "witness": "district-b"
+  },
+  {
+    "id": "ion-batch-B2",
+    "kind": "ion_calibration_batch",
+    "batch_id": "B2",
+    "standard_na": 500,
+    "standard_ca": 500,
+    "observed_ec": 1050,
+    "technician": "lab-a",
+    "witness": "district-b"
+  },
+  {
+    "id": "site-S1",
+    "kind": "quality_site",
+    "site_id": "S1",
+    "canal_id": "C1",
+    "crop": "rice"
+  },
+  {
+    "id": "site-S3",
+    "kind": "quality_site",
+    "site_id": "S3",
+    "canal_id": "C2",
+    "crop": "rice"
+  },
+  {
+    "id": "site-S4",
+    "kind": "quality_site",
+    "site_id": "S4",
+    "canal_id": "C2",
+    "crop": "rice"
+  },
+  {
+    "id": "ec-S1-PA",
+    "kind": "quality_ec",
+    "site_id": "S1",
+    "at": "2026-11-22T08:00:00Z",
+    "ec_us": 1200,
+    "parcel_id": "P-A",
+    "bottle_id": "BTL-A-1",
+    "volume_ml": 500,
+    "seal_intact": true,
+    "batch_id": "B1",
+    "window_start": "2026-11-22T07:00:00Z",
+    "window_end": "2026-11-22T09:00:00Z"
+  },
+  {
+    "id": "ec-S1-PB",
+    "kind": "quality_ec",
+    "site_id": "S1",
+    "at": "2026-11-22T08:00:00Z",
+    "ec_us": 1200,
+    "parcel_id": "P-B",
+    "bottle_id": "BTL-B-1",
+    "volume_ml": 500,
+    "seal_intact": true,
+    "batch_id": "B1",
+    "window_start": "2026-11-22T07:00:00Z",
+    "window_end": "2026-11-22T09:00:00Z"
+  },
+  {
+    "id": "ec-S1-PC",
+    "kind": "quality_ec",
+    "site_id": "S1",
+    "at": "2026-11-22T08:00:00Z",
+    "ec_us": 1200,
+    "parcel_id": "P-C",
+    "bottle_id": "BTL-C-1",
+    "volume_ml": 500,
+    "seal_intact": false,
+    "batch_id": "B1",
+    "window_start": "2026-11-22T07:00:00Z",
+    "window_end": "2026-11-22T09:00:00Z"
+  },
+  {
+    "id": "ec-S3-PX",
+    "kind": "quality_ec",
+    "site_id": "S3",
+    "at": "2026-11-23T08:00:00Z",
+    "ec_us": 1200,
+    "parcel_id": "P-X",
+    "bottle_id": "BTL-X-1",
+    "volume_ml": 500,
+    "seal_intact": true,
+    "batch_id": "B2",
+    "window_start": "2026-11-23T07:00:00Z",
+    "window_end": "2026-11-23T09:00:00Z"
+  },
+  {
+    "id": "ec-S4-PY",
+    "kind": "quality_ec",
+    "site_id": "S4",
+    "at": "2026-11-23T08:00:00Z",
+    "ec_us": 1200,
+    "parcel_id": "P-Y",
+    "bottle_id": "BTL-Y-1",
+    "volume_ml": 500,
+    "seal_intact": true,
+    "batch_id": "B2",
+    "window_start": "2026-11-23T07:00:00Z",
+    "window_end": "2026-11-23T09:00:00Z"
+  },
+  {
+    "id": "ion-S1-PA",
+    "kind": "ion_analysis",
+    "site_id": "S1",
+    "parcel_id": "P-A",
+    "bottle_id": "BTL-A-1",
+    "method": "chromatography",
+    "seal_intact": true,
+    "na": 900,
+    "ca": 300
+  },
+  {
+    "id": "ion-S1-PB",
+    "kind": "ion_analysis",
+    "site_id": "S1",
+    "parcel_id": "P-B",
+    "bottle_id": "BTL-B-1",
+    "method": "chromatography",
+    "seal_intact": true,
+    "na": 300,
+    "ca": 900
+  },
+  {
+    "id": "ion-S3-PX",
+    "kind": "ion_analysis",
+    "site_id": "S3",
+    "parcel_id": "P-X",
+    "bottle_id": "BTL-X-1",
+    "method": "chromatography",
+    "seal_intact": true,
+    "na": 945,
+    "ca": 205
+  },
+  {
+    "id": "ion-S4-PY",
+    "kind": "ion_analysis",
+    "site_id": "S4",
+    "parcel_id": "P-Y",
+    "bottle_id": "BTL-Y-1",
+    "method": "chromatography",
+    "seal_intact": true,
+    "na": 345,
+    "ca": 805
+  },
+  {
+    "id": "ec-S1-PD",
+    "kind": "quality_ec",
+    "site_id": "S1",
+    "at": "2026-11-24T08:00:00Z",
+    "ec_us": 1200,
+    "parcel_id": "P-D",
+    "bottle_id": "BTL-D-1",
+    "volume_ml": 500,
+    "seal_intact": true,
+    "batch_id": "B1",
+    "window_start": "2026-11-24T07:00:00Z",
+    "window_end": "2026-11-24T09:00:00Z"
+  },
+  {
+    "id": "elec-S1-PD",
+    "kind": "electrode_patrol",
+    "site_id": "S1",
+    "parcel_id": "P-D",
+    "batch_id": "B1",
+    "cover_start": "2026-11-24T07:30:00Z",
+    "cover_end": "2026-11-24T08:30:00Z",
+    "points": [
+      {"at": "2026-11-24T07:30:00Z", "na": 400},
+      {"at": "2026-11-24T08:00:00Z", "na": 500},
+      {"at": "2026-11-24T08:30:00Z", "na": 450}
+    ]
+  }
+]
