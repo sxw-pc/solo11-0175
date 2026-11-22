@@ -1,0 +1,58 @@
+{
+  "scenario": "N1/N2 steel bracket thermal expansion versus real embankment slip",
+  "model": "y(t)=s(t)+k*(T(t)-T0); batch k unknown inside [0,0.1] deg/C and shared across N1/N2",
+  "threshold_deg": 0.5,
+  "sampling": {
+    "morning": "2026-11-22T06:00:00Z",
+    "afternoon": "2026-11-22T14:00:00Z",
+    "zeroed_at": "2026-11-22T06:00:00Z",
+    "reference_temperature_c": 20
+  },
+  "worlds": {
+    "alpha": {"k": 0.1, "n1_s_14": 0.0, "note": "bracket expands, embankment does not slip; no closure"},
+    "beta": {"k": 0.0, "n1_s_14": 1.0, "note": "embankment really slips one degree; closure required"}
+  },
+  "pages": [
+    {"id": "S1", "kind": "bank_sensor", "sensor_id": "N1-T01", "canal_id": "C1", "segment": "N1"},
+    {"id": "S2", "kind": "bank_sensor", "sensor_id": "N2-T01", "canal_id": "C1", "segment": "N2"},
+    {"id": "Z1", "kind": "bank_sensor_zero", "sensor_id": "N1-T01", "zeroed_at": "2026-11-22T06:00:00Z", "ref_temperature_c": 20.0},
+    {"id": "Z2", "kind": "bank_sensor_zero", "sensor_id": "N2-T01", "zeroed_at": "2026-11-22T06:00:00Z", "ref_temperature_c": 20.0},
+    {"id": "B1", "kind": "bank_thermal_batch", "batch_id": "LOT-2026-S7", "material_lot": "STEEL-S7", "k_min": 0.0, "k_max": 0.1},
+    {"id": "R1", "kind": "bank_bracket", "sensor_id": "N1-T01", "batch_id": "LOT-2026-S7"},
+    {"id": "R2", "kind": "bank_bracket", "sensor_id": "N2-T01", "batch_id": "LOT-2026-S7"},
+    {"id": "M1", "kind": "bank_temperature", "sensor_id": "N1-T01", "at": "2026-11-22T06:00:00Z", "temperature_c": 20.0},
+    {"id": "M2", "kind": "bank_temperature", "sensor_id": "N1-T01", "at": "2026-11-22T14:00:00Z", "temperature_c": 30.0},
+    {"id": "M3", "kind": "bank_temperature", "sensor_id": "N2-T01", "at": "2026-11-22T06:00:00Z", "temperature_c": 20.0},
+    {"id": "M4", "kind": "bank_temperature", "sensor_id": "N2-T01", "at": "2026-11-22T14:00:00Z", "temperature_c": 26.0},
+    {"id": "T1", "kind": "bank_tilt", "sensor_id": "N1-T01", "at": "2026-11-22T06:00:00Z", "tilt_deg": 0.0},
+    {"id": "T2", "kind": "bank_tilt", "sensor_id": "N1-T01", "at": "2026-11-22T14:00:00Z", "tilt_deg": 1.0},
+    {"id": "T3", "kind": "bank_tilt", "sensor_id": "N2-T01", "at": "2026-11-22T06:00:00Z", "tilt_deg": 0.0},
+    {"id": "T4", "kind": "bank_tilt", "sensor_id": "N2-T01", "at": "2026-11-22T14:00:00Z", "tilt_deg": 0.6},
+    {"id": "BM1", "kind": "bank_benchmark", "mark_id": "BM-ROCK-1", "bedrock_anchored": true, "flood_disturbed": false},
+    {"id": "BM2", "kind": "bank_benchmark", "mark_id": "BM-FLOOD-1", "bedrock_anchored": true, "flood_disturbed": true},
+    {"id": "P1", "kind": "bank_photo", "segment": "N1", "taken_at": "2026-11-22T15:00:00Z", "subject": "afternoon crack on canal wall; formation time unknown"}
+  ],
+  "reviews": [
+    {"id": "V1", "kind": "bank_slip_review", "segment": "N1", "segment_length_m": 120, "reviewed_at": "2026-11-22T16:00:00Z"},
+    {"id": "V2", "kind": "bank_slip_review", "segment": "N2", "segment_length_m": 80, "reviewed_at": "2026-11-22T16:00:00Z"}
+  ],
+  "route1_total_station": [
+    {"id": "TS-ALPHA", "kind": "bank_total_station", "segment": "N1", "mark_id": "BM-ROCK-1", "at": "2026-11-22T14:00:00Z", "wall_rotation_deg": 0.0},
+    {"id": "TS-BETA", "kind": "bank_total_station", "segment": "N1", "mark_id": "BM-ROCK-1", "at": "2026-11-22T14:00:00Z", "wall_rotation_deg": 1.0},
+    {"id": "TS-FLOOD", "kind": "bank_total_station", "segment": "N1", "mark_id": "BM-FLOOD-1", "at": "2026-11-22T14:00:00Z", "wall_rotation_deg": 0.0}
+  ],
+  "route2_oven_calibration": [
+    {"id": "OV-ALPHA", "kind": "bank_oven_calibration", "batch_id": "LOT-2026-S7", "k_deg_per_c": 0.1, "points": 4, "technician": "materials_lab", "witness": "supervision_engineer"},
+    {"id": "OV-BETA", "kind": "bank_oven_calibration", "batch_id": "LOT-2026-S7", "k_deg_per_c": 0.0, "points": 4, "technician": "materials_lab", "witness": "supervision_engineer"}
+  ],
+  "field_flags": [
+    {"id": "F1", "kind": "bank_field_flag", "segment": "N2", "sensor_id": "N2-T01", "flag": "anchor_loose", "noted_at": "2026-11-22T15:30:00Z"}
+  ],
+  "repair_certificates": [
+    {"id": "C1", "kind": "bank_repair_certificate", "cert_id": "RC-N1-001", "segment": "N1", "length_m": 120}
+  ],
+  "expected_without_supplementary_proof": {
+    "N1": {"status": "pending_review", "s_min": 0.0, "s_max": 1.0, "closed_length_m": 0},
+    "N2": {"status": "pending_review", "s_min": 0.0, "s_max": 0.6, "closed_length_m": 0}
+  }
+}

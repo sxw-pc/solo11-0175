@@ -18,8 +18,19 @@ CREATE TABLE IF NOT EXISTS compensation(rotation_id TEXT PRIMARY KEY,units INTEG
 CREATE TABLE IF NOT EXISTS liability_review(rotation_id TEXT PRIMARY KEY,reason TEXT NOT NULL,responsible TEXT NOT NULL,units INTEGER NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
 CREATE TABLE IF NOT EXISTS decision_log(id INTEGER PRIMARY KEY,object_type TEXT NOT NULL,object_id TEXT NOT NULL,status TEXT NOT NULL,reason TEXT NOT NULL,evidence_id TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS bank_sensor(id TEXT PRIMARY KEY,canal_id TEXT NOT NULL,segment TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS bank_sensor_zero(sensor_id TEXT PRIMARY KEY REFERENCES bank_sensor(id),zeroed_at TEXT NOT NULL,ref_temperature_c REAL NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
 CREATE TABLE IF NOT EXISTS bank_tilt(source_id TEXT PRIMARY KEY REFERENCES evidence(id),sensor_id TEXT NOT NULL REFERENCES bank_sensor(id),at TEXT NOT NULL,tilt_deg REAL NOT NULL);
 CREATE TABLE IF NOT EXISTS bank_advice(segment TEXT PRIMARY KEY,status TEXT NOT NULL,tilt_deg REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS bank_thermal_batch(batch_id TEXT PRIMARY KEY,material_lot TEXT NOT NULL,k_min REAL NOT NULL DEFAULT 0,k_max REAL NOT NULL DEFAULT 0.1,calibrated INTEGER NOT NULL DEFAULT 0,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS bank_bracket(sensor_id TEXT PRIMARY KEY REFERENCES bank_sensor(id),batch_id TEXT NOT NULL REFERENCES bank_thermal_batch(batch_id),source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS bank_temperature(source_id TEXT PRIMARY KEY REFERENCES evidence(id),sensor_id TEXT NOT NULL REFERENCES bank_sensor(id),at TEXT NOT NULL,temperature_c REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS bank_benchmark(mark_id TEXT PRIMARY KEY,bedrock_anchored INTEGER NOT NULL,flood_disturbed INTEGER NOT NULL DEFAULT 0,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS bank_total_station(source_id TEXT PRIMARY KEY REFERENCES evidence(id),segment TEXT NOT NULL,mark_id TEXT NOT NULL REFERENCES bank_benchmark(mark_id),at TEXT NOT NULL,wall_rotation_deg REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS bank_oven_calibration(source_id TEXT PRIMARY KEY REFERENCES evidence(id),batch_id TEXT NOT NULL REFERENCES bank_thermal_batch(batch_id),k_deg_per_c REAL NOT NULL,points INTEGER NOT NULL,technician TEXT NOT NULL,witness TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS bank_photo(source_id TEXT PRIMARY KEY REFERENCES evidence(id),segment TEXT NOT NULL,taken_at TEXT NOT NULL,subject TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS bank_field_flag(source_id TEXT PRIMARY KEY REFERENCES evidence(id),segment TEXT NOT NULL,sensor_id TEXT NOT NULL REFERENCES bank_sensor(id),flag TEXT NOT NULL,noted_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS bank_slip_review(segment TEXT NOT NULL,version INTEGER NOT NULL,status TEXT NOT NULL,s_min REAL NOT NULL,s_max REAL NOT NULL,closed_length_m INTEGER NOT NULL,revisit_sensors TEXT NOT NULL,reason TEXT NOT NULL,basis TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id),reviewed_at TEXT NOT NULL,PRIMARY KEY(segment,version));
+CREATE TABLE IF NOT EXISTS bank_repair_certificate(cert_id TEXT PRIMARY KEY,segment TEXT NOT NULL,length_m INTEGER NOT NULL,basis_review_source TEXT NOT NULL,status TEXT NOT NULL,source_id TEXT NOT NULL UNIQUE REFERENCES evidence(id));
 '''
 
 def connect(path):
@@ -48,4 +59,15 @@ def report(path):
          'deliveries':'SELECT * FROM delivery ORDER BY rotation_id','compensation':'SELECT * FROM compensation ORDER BY rotation_id',
          'bank_sensors':'SELECT * FROM bank_sensor ORDER BY id','bank_tilts':'SELECT * FROM bank_tilt ORDER BY source_id',
          'bank_advice':'SELECT * FROM bank_advice ORDER BY segment',
+         'bank_zeros':'SELECT * FROM bank_sensor_zero ORDER BY sensor_id',
+         'bank_batches':'SELECT * FROM bank_thermal_batch ORDER BY batch_id',
+         'bank_brackets':'SELECT * FROM bank_bracket ORDER BY sensor_id',
+         'bank_temperatures':'SELECT * FROM bank_temperature ORDER BY source_id',
+         'bank_benchmarks':'SELECT * FROM bank_benchmark ORDER BY mark_id',
+         'bank_total_station':'SELECT * FROM bank_total_station ORDER BY source_id',
+         'bank_calibrations':'SELECT * FROM bank_oven_calibration ORDER BY source_id',
+         'bank_photos':'SELECT * FROM bank_photo ORDER BY source_id',
+         'bank_field_flags':'SELECT * FROM bank_field_flag ORDER BY source_id',
+         'bank_slip_reviews':'SELECT * FROM bank_slip_review ORDER BY segment,version',
+         'bank_repair_certificates':'SELECT * FROM bank_repair_certificate ORDER BY cert_id',
          'decisions':'SELECT * FROM decision_log ORDER BY id'}.items()}
