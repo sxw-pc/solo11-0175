@@ -18,8 +18,12 @@ CREATE TABLE IF NOT EXISTS compensation(rotation_id TEXT PRIMARY KEY,units INTEG
 CREATE TABLE IF NOT EXISTS liability_review(rotation_id TEXT PRIMARY KEY,reason TEXT NOT NULL,responsible TEXT NOT NULL,units INTEGER NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
 CREATE TABLE IF NOT EXISTS decision_log(id INTEGER PRIMARY KEY,object_type TEXT NOT NULL,object_id TEXT NOT NULL,status TEXT NOT NULL,reason TEXT NOT NULL,evidence_id TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS fish_sonar(id TEXT PRIMARY KEY,canal_id TEXT NOT NULL,bank TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
-CREATE TABLE IF NOT EXISTS fish_echo(source_id TEXT PRIMARY KEY REFERENCES evidence(id),sonar_id TEXT NOT NULL REFERENCES fish_sonar(id),track_hint TEXT NOT NULL,at TEXT NOT NULL,range_m REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS fish_echo(id TEXT PRIMARY KEY,source_id TEXT NOT NULL REFERENCES evidence(id),sonar_id TEXT NOT NULL REFERENCES fish_sonar(id),track_hint TEXT NOT NULL,at TEXT NOT NULL,range_m REAL NOT NULL,direction TEXT NOT NULL DEFAULT 'unknown',waveform TEXT NOT NULL DEFAULT '{}',band_lo REAL NOT NULL DEFAULT 0,band_hi REAL NOT NULL DEFAULT 0,clock_session TEXT NOT NULL DEFAULT '',clock_lo REAL NOT NULL DEFAULT 0,clock_hi REAL NOT NULL DEFAULT 0);
 CREATE TABLE IF NOT EXISTS fish_passage(canal_id TEXT PRIMARY KEY,provisional_count INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS fish_fishway(id TEXT PRIMARY KEY,canal_id TEXT NOT NULL,up_sonar TEXT NOT NULL,down_sonar TEXT NOT NULL,length_m REAL NOT NULL,max_speed_kmh REAL NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS fish_video(id TEXT PRIMARY KEY,canal_id TEXT NOT NULL,start_at TEXT NOT NULL,end_at TEXT NOT NULL,links TEXT NOT NULL,occluded_parallel INTEGER NOT NULL DEFAULT 0,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS fish_pit(id TEXT PRIMARY KEY,canal_id TEXT NOT NULL,start_at TEXT NOT NULL,end_at TEXT NOT NULL,reads TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES evidence(id));
+CREATE TABLE IF NOT EXISTS fish_net(id TEXT PRIMARY KEY,canal_id TEXT NOT NULL,window_start TEXT NOT NULL,window_end TEXT NOT NULL,method TEXT NOT NULL,lower INTEGER NOT NULL,upper INTEGER NOT NULL,worlds TEXT NOT NULL,evidence TEXT NOT NULL,caveats TEXT NOT NULL,version INTEGER NOT NULL);
 '''
 
 def connect(path):
@@ -46,6 +50,8 @@ def report(path):
          'issuers':'SELECT * FROM issuer ORDER BY id','rights':'SELECT * FROM water_right ORDER BY id','rotations':'SELECT * FROM rotation ORDER BY id','maintenance':'SELECT * FROM maintenance ORDER BY id',
          'calibrations':'SELECT * FROM calibration ORDER BY id','reviews':'SELECT * FROM liability_review ORDER BY rotation_id',
          'deliveries':'SELECT * FROM delivery ORDER BY rotation_id','compensation':'SELECT * FROM compensation ORDER BY rotation_id',
-         'fish_sonars':'SELECT * FROM fish_sonar ORDER BY id','fish_echoes':'SELECT * FROM fish_echo ORDER BY source_id',
-         'fish_passage':'SELECT * FROM fish_passage ORDER BY canal_id',
+         'fish_sonars':'SELECT * FROM fish_sonar ORDER BY id','fish_echoes':'SELECT * FROM fish_echo ORDER BY at,id',
+         'fish_passage':'SELECT * FROM fish_passage ORDER BY canal_id','fish_fishways':'SELECT * FROM fish_fishway ORDER BY id',
+         'fish_videos':'SELECT * FROM fish_video ORDER BY id','fish_pits':'SELECT * FROM fish_pit ORDER BY id',
+         'fish_nets':'SELECT * FROM fish_net ORDER BY id',
          'decisions':'SELECT * FROM decision_log ORDER BY id'}.items()}

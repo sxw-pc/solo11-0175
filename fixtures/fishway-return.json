@@ -1,0 +1,36 @@
+{
+  "kind": "fish_pack",
+  "id": "pack-fishway-return-2026-11-22",
+  "canal_id": "C1",
+  "fishway": {
+    "id": "fishway-C1",
+    "up_sonar": "A",
+    "down_sonar": "B",
+    "length_m": 600,
+    "max_speed_kmh": 6
+  },
+  "sonars": [
+    {"sonar_id": "A", "bank": "upstream"},
+    {"sonar_id": "B", "bank": "downstream"}
+  ],
+  "echoes": [
+    {
+      "id": "echo-B00", "sonar_id": "B", "track_hint": "T1",
+      "at": "2026-11-22T08:00:00Z", "range_m": 5, "direction": "up",
+      "waveform": {"size_class": "M", "envelope_sha": "9f2c"}, "band": [2, 30],
+      "clock": {"session": "B-boot1", "offset_s": [-3, 3]}
+    },
+    {
+      "id": "echo-A06", "sonar_id": "A", "track_hint": "T1",
+      "at": "2026-11-22T08:06:00Z", "range_m": 6, "direction": "up",
+      "waveform": {"size_class": "M", "envelope_sha": "9f2c"}, "band": [2, 30],
+      "clock": {"session": "A-boot1", "offset_s": [-3, 3]}
+    },
+    {
+      "id": "echo-B12", "sonar_id": "B", "track_hint": "T2",
+      "at": "2026-11-22T08:12:00Z", "range_m": 5, "direction": "down",
+      "waveform": {"size_class": "M", "envelope_sha": "9f2c"}, "band": [2, 30],
+      "clock": {"session": "B-boot1", "offset_s": [-3, 3]}
+    }
+  ]
+}

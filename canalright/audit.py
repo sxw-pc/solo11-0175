@@ -5,8 +5,10 @@ from .store import connect,report
 from .rights import import_right,revoke_right,import_issuer
 from .rotation import import_rotation,close_canal,open_canal
 from .gate import import_gate,import_calibration,review_shortage
+from .sonar import import_sonar,import_echo,import_pack
+from .net_migration import import_video,import_pit
 
-HANDLERS={'issuer':import_issuer,'right':import_right,'right_revoke':revoke_right,'rotation':import_rotation,'canal_close':close_canal,'canal_open':open_canal,'calibration':import_calibration,'gate':import_gate,'liability_review':review_shortage}
+HANDLERS={'issuer':import_issuer,'right':import_right,'right_revoke':revoke_right,'rotation':import_rotation,'canal_close':close_canal,'canal_open':open_canal,'calibration':import_calibration,'gate':import_gate,'liability_review':review_shortage,'fish_sonar':import_sonar,'fish_echo':import_echo,'fish_pack':import_pack,'fish_video':import_video,'fish_pit':import_pit}
 
 def audit(path):
     with closing(connect(path)) as db:
